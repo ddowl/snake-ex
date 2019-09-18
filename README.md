@@ -1,21 +1,11 @@
 # SnakeEx
 
-**TODO: Add description**
+**A CLI for the game "Snake", written in Elixir**
 
-## Installation
+## Usage
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `snake_ex` to your list of dependencies in `mix.exs`:
+After cloning the repository, change into the workspace and run
 
-```elixir
-def deps do
-  [
-    {:snake_ex, "~> 0.1.0"}
-  ]
-end
 ```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/snake_ex](https://hexdocs.pm/snake_ex).
-
+mix run -e "SnakeEx.run()"
+```
