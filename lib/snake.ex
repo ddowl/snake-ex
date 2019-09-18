@@ -1,6 +1,6 @@
-defmodule SnakeEx do
+defmodule Snake do
   @moduledoc """
-  Documentation for SnakeEx.
+  Documentation for Snake.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule SnakeEx do
 
   ## Examples
 
-      iex> SnakeEx.hello()
+      iex> Snake.hello()
       :world
 
   """
