@@ -5,6 +5,10 @@ defmodule SnakeEx do
   import Ratatouille.View
 
   def init(%{window: window}) do
+    log_filename = __ENV__.file |> Path.join("../snake.log") |> Path.expand()
+    log_file = File.open!(log_filename, [:write, :utf8])
+    IO.puts(log_file, "in init!")
+
     grid_height = window.height - 4
     grid_width = window.width - 4
 
@@ -12,12 +16,16 @@ defmodule SnakeEx do
       pellet: rand_pos(grid_width, grid_height),
       snake: [rand_pos(grid_width, grid_height)],
       height: grid_height,
-      width: grid_width
+      width: grid_width,
+      log_file: log_file
     }
   end
 
   def update(model, msg) do
     case msg do
+      {:event, %{key: key}} ->
+        IO.puts(model.log_file, "key pressed: #{key}")
+        model
       _ -> model
     end
   end

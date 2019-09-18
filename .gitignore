@@ -24,3 +24,6 @@ snake_ex-*.tar
 
 # VSCode ElixirLS plugin
 .elixir_ls
+
+# Debug log
+snake.log
