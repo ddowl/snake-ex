@@ -1,8 +1,4 @@
-defmodule SnakeTest do
+defmodule SnakeExTest do
   use ExUnit.Case
-  doctest Snake
-
-  test "greets the world" do
-    assert Snake.hello() == :world
-  end
+  doctest SnakeEx
 end
