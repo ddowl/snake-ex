@@ -34,9 +34,16 @@ defmodule SnakeEx do
       {:event, %{key: key}} when key in @arrows ->
         %{model | direction: next_direction(key)}
 
+      :tick ->
+        move_snake(model)
+
       _ ->
         model
     end
+  end
+
+  def subscribe(_model) do
+    Ratatouille.Runtime.Subscription.interval(100, :tick)
   end
 
   def render(model) do
@@ -54,7 +61,7 @@ defmodule SnakeEx do
   end
 
   def run() do
-    Ratatouille.run(__MODULE__)
+    Ratatouille.run(__MODULE__, interval: 100)
   end
 
   defp rand_pos(width, height) do
@@ -73,4 +80,19 @@ defmodule SnakeEx do
   defp next_direction(@down), do: :down
   defp next_direction(@left), do: :left
   defp next_direction(@right), do: :right
+
+  defp move_snake(model) do
+    next_snake =
+      Enum.map(model.snake, fn {x, y} ->
+        case model.direction do
+          :up -> {x, y - 1}
+          :down -> {x, y + 1}
+          :right -> {x + 1, y}
+          :left -> {x - 1, y}
+          _ -> {x, y}
+        end
+      end)
+
+    %{model | snake: next_snake}
+  end
 end
