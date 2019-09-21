@@ -1,8 +1,15 @@
 defmodule SnakeEx do
+  import Ratatouille.View
+  import Ratatouille.Constants, only: [key: 1]
+
   @behaviour Ratatouille.App
   @block "█"
 
-  import Ratatouille.View
+  @up key(:arrow_up)
+  @down key(:arrow_down)
+  @left key(:arrow_left)
+  @right key(:arrow_right)
+  @arrows [@up, @down, @left, @right]
 
   def init(%{window: window}) do
     log_filename = __ENV__.file |> Path.join("../snake.log") |> Path.expand()
@@ -15,6 +22,7 @@ defmodule SnakeEx do
     %{
       pellet: rand_pos(grid_width, grid_height),
       snake: [rand_pos(grid_width, grid_height)],
+      direction: nil,
       height: grid_height,
       width: grid_width,
       log_file: log_file
@@ -23,9 +31,8 @@ defmodule SnakeEx do
 
   def update(model, msg) do
     case msg do
-      {:event, %{key: key}} ->
-        IO.puts(model.log_file, "key pressed: #{key}")
-        model
+      {:event, %{key: key}} when key in @arrows ->
+        %{model | direction: next_direction(key)}
 
       _ ->
         model
@@ -61,4 +68,9 @@ defmodule SnakeEx do
   defp snake_cells(%{snake: cells}) do
     Enum.map(cells, fn {x, y} -> canvas_cell(x: x, y: y, char: @block, color: :green) end)
   end
+
+  defp next_direction(@up), do: :up
+  defp next_direction(@down), do: :down
+  defp next_direction(@left), do: :left
+  defp next_direction(@right), do: :right
 end
