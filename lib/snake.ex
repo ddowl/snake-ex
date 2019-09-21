@@ -1,6 +1,6 @@
 defmodule SnakeEx do
   @behaviour Ratatouille.App
-  @block "⬛"
+  @block "█"
 
   import Ratatouille.View
 
@@ -26,7 +26,9 @@ defmodule SnakeEx do
       {:event, %{key: key}} ->
         IO.puts(model.log_file, "key pressed: #{key}")
         model
-      _ -> model
+
+      _ ->
+        model
     end
   end
 
