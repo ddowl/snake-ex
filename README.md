@@ -7,5 +7,5 @@
 After cloning the repository, change into the workspace and run
 
 ```
-mix run -e "SnakeEx.run()"
+mix run lib/snake.exs
 ```

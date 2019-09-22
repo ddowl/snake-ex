@@ -60,10 +60,6 @@ defmodule SnakeEx do
     end
   end
 
-  def run() do
-    Ratatouille.run(__MODULE__, interval: 100)
-  end
-
   defp rand_pos(width, height) do
     {:rand.uniform(width - 1), :rand.uniform(height - 1)}
   end
