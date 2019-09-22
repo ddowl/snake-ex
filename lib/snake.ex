@@ -23,6 +23,7 @@ defmodule SnakeEx do
       pellet: rand_pos(grid_width, grid_height),
       snake: [rand_pos(grid_width, grid_height)],
       direction: nil,
+      alive: true,
       height: grid_height,
       width: grid_width,
       log_file: log_file
@@ -46,17 +47,28 @@ defmodule SnakeEx do
     Ratatouille.Runtime.Subscription.interval(100, :tick)
   end
 
-  def render(model) do
+  def render(%{snake: snake} = model) do
     view do
       panel(
         color: :green,
-        title: "Snake! Grab the pellet, and avoid the walls! (Press q to quit)"
+        padding: 0,
+        height: :fill,
+        title:
+          "Snake! Grab the pellet, and avoid the walls! Score=#{length(snake)} (Press q to quit)"
       ) do
-        canvas(height: model.height, width: model.width) do
-          pellet_cell(model)
-          snake_cells(model)
-        end
+        render_grid(model)
       end
+    end
+  end
+
+  def render_grid(%{alive: false}) do
+    label(content: "Game Over")
+  end
+
+  def render_grid(%{alive: true} = model) do
+    canvas(height: model.height, width: model.width) do
+      pellet_cell(model)
+      snake_cells(model)
     end
   end
 
