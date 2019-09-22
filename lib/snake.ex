@@ -16,8 +16,8 @@ defmodule SnakeEx do
     log_file = File.open!(log_filename, [:write, :utf8])
     IO.puts(log_file, "in init!")
 
-    grid_height = window.height - 4
-    grid_width = window.width - 4
+    grid_height = window.height - 2
+    grid_width = window.width - 2
 
     %{
       pellet: rand_pos(grid_width, grid_height),
@@ -101,6 +101,16 @@ defmodule SnakeEx do
         end
       end)
 
-    %{model | snake: next_snake}
+    [head | _tail] = next_snake
+
+    if out_of_bounds(model, head) do
+      %{model | alive: false}
+    else
+      %{model | snake: next_snake}
+    end
+  end
+
+  defp out_of_bounds(model, {head_x, head_y}) do
+    head_x < 0 || head_x >= model.width || head_y < 0 || head_y >= model.height
   end
 end
