@@ -44,7 +44,7 @@ defmodule SnakeEx do
   end
 
   def subscribe(_model) do
-    Ratatouille.Runtime.Subscription.interval(100, :tick)
+    Ratatouille.Runtime.Subscription.interval(50, :tick)
   end
 
   def render(%{snake: snake} = model) do

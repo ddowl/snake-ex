@@ -1,1 +1,1 @@
-Ratatouille.run(SnakeEx, interval: 100)
+Ratatouille.run(SnakeEx, interval: 50)
