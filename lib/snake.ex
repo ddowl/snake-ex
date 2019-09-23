@@ -1,4 +1,6 @@
 defmodule SnakeEx do
+  require Integer
+
   import Ratatouille.View
   import Ratatouille.Constants, only: [key: 1]
 
@@ -67,21 +69,23 @@ defmodule SnakeEx do
 
   def render_grid(%{alive: true} = model) do
     canvas(height: model.height, width: model.width) do
-      pellet_cell(model)
-      snake_cells(model)
+      pellet_cell(model.pellet)
+      snake_cells(model.snake)
     end
   end
 
   defp rand_pos(width, height) do
-    {:rand.uniform(width - 1), :rand.uniform(height - 1)}
+    even_xs = 0..(width - 1) |> Enum.filter(&Integer.is_even(&1))
+    even_ys = 0..(height - 1) |> Enum.filter(&Integer.is_even(&1))
+    {Enum.random(even_xs), Enum.random(even_ys)}
   end
 
-  defp pellet_cell(%{pellet: {x, y}}) do
-    canvas_cell(x: x, y: y, char: @block, color: :red)
+  defp pellet_cell(pos) do
+    full_block(pos, :red)
   end
 
-  defp snake_cells(%{snake: cells}) do
-    Enum.map(cells, fn {x, y} -> canvas_cell(x: x, y: y, char: @block, color: :green) end)
+  defp snake_cells(snake) do
+    Enum.map(snake, &full_block(&1, :green))
   end
 
   defp next_direction(:up, :down), do: :up
@@ -115,8 +119,8 @@ defmodule SnakeEx do
 
   defp next_pos({x, y}, :up), do: {x, y - 1}
   defp next_pos({x, y}, :down), do: {x, y + 1}
-  defp next_pos({x, y}, :left), do: {x - 1, y}
-  defp next_pos({x, y}, :right), do: {x + 1, y}
+  defp next_pos({x, y}, :left), do: {x - 2, y}
+  defp next_pos({x, y}, :right), do: {x + 2, y}
   defp next_pos({x, y}, _), do: {x, y}
 
   defp out_of_bounds(model, {head_x, head_y}) do
@@ -125,5 +129,12 @@ defmodule SnakeEx do
 
   defp snake_overlapping([head | tail]) do
     Enum.any?(tail, &(&1 == head))
+  end
+
+  defp full_block({x, y}, color) do
+    [
+      canvas_cell(x: x, y: y, char: @block, color: color),
+      canvas_cell(x: x + 1, y: y, char: @block, color: color)
+    ]
   end
 end
