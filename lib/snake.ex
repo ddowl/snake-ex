@@ -90,25 +90,27 @@ defmodule SnakeEx do
   defp next_direction(@right), do: :right
 
   defp move_snake(model) do
-    next_snake =
-      Enum.map(model.snake, fn {x, y} ->
-        case model.direction do
-          :up -> {x, y - 1}
-          :down -> {x, y + 1}
-          :right -> {x + 1, y}
-          :left -> {x - 1, y}
-          _ -> {x, y}
-        end
-      end)
+    [head | tail] = model.snake
+    next_head = next_pos(head, model.direction)
 
-    [head | _tail] = next_snake
+    cond do
+      out_of_bounds(model, next_head) ->
+        %{model | alive: false}
 
-    if out_of_bounds(model, head) do
-      %{model | alive: false}
-    else
-      %{model | snake: next_snake}
+      next_head == model.pellet ->
+        next_pellet = rand_pos(model.width, model.height)
+        %{model | pellet: next_pellet, snake: [next_head | model.snake]}
+
+      true ->
+        %{model | snake: [next_head | Enum.drop(model.snake, -1)]}
     end
   end
+
+  defp next_pos({x, y}, :up), do: {x, y - 1}
+  defp next_pos({x, y}, :down), do: {x, y + 1}
+  defp next_pos({x, y}, :left), do: {x - 1, y}
+  defp next_pos({x, y}, :right), do: {x + 1, y}
+  defp next_pos({x, y}, _), do: {x, y}
 
   defp out_of_bounds(model, {head_x, head_y}) do
     head_x < 0 || head_x >= model.width || head_y < 0 || head_y >= model.height
