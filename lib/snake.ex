@@ -88,7 +88,7 @@ defmodule SnakeEx do
   defp next_direction(:down, :up), do: :down
   defp next_direction(:left, :right), do: :left
   defp next_direction(:right, :left), do: :right
-  defp next_direction(curr_direction, key_direction), do: key_direction
+  defp next_direction(_curr_direction, key_direction), do: key_direction
 
   defp key_code_to_direction(@up), do: :up
   defp key_code_to_direction(@down), do: :down
@@ -96,11 +96,12 @@ defmodule SnakeEx do
   defp key_code_to_direction(@right), do: :right
 
   defp move_snake(model) do
-    [head | tail] = model.snake
+    [head | _tail] = model.snake
     next_head = next_pos(head, model.direction)
+    new_snake = [next_head | Enum.drop(model.snake, -1)]
 
     cond do
-      out_of_bounds(model, next_head) ->
+      out_of_bounds(model, next_head) || snake_overlapping(new_snake) ->
         %{model | alive: false}
 
       next_head == model.pellet ->
@@ -108,7 +109,7 @@ defmodule SnakeEx do
         %{model | pellet: next_pellet, snake: [next_head | model.snake]}
 
       true ->
-        %{model | snake: [next_head | Enum.drop(model.snake, -1)]}
+        %{model | snake: new_snake}
     end
   end
 
@@ -120,5 +121,9 @@ defmodule SnakeEx do
 
   defp out_of_bounds(model, {head_x, head_y}) do
     head_x < 0 || head_x >= model.width || head_y < 0 || head_y >= model.height
+  end
+
+  defp snake_overlapping([head | tail]) do
+    Enum.any?(tail, &(&1 == head))
   end
 end
