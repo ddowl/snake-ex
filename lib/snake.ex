@@ -33,7 +33,7 @@ defmodule SnakeEx do
   def update(model, msg) do
     case msg do
       {:event, %{key: key}} when key in @arrows ->
-        %{model | direction: next_direction(key)}
+        %{model | direction: next_direction(model.direction, key_code_to_direction(key))}
 
       :tick ->
         move_snake(model)
@@ -84,10 +84,16 @@ defmodule SnakeEx do
     Enum.map(cells, fn {x, y} -> canvas_cell(x: x, y: y, char: @block, color: :green) end)
   end
 
-  defp next_direction(@up), do: :up
-  defp next_direction(@down), do: :down
-  defp next_direction(@left), do: :left
-  defp next_direction(@right), do: :right
+  defp next_direction(:up, :down), do: :up
+  defp next_direction(:down, :up), do: :down
+  defp next_direction(:left, :right), do: :left
+  defp next_direction(:right, :left), do: :right
+  defp next_direction(curr_direction, key_direction), do: key_direction
+
+  defp key_code_to_direction(@up), do: :up
+  defp key_code_to_direction(@down), do: :down
+  defp key_code_to_direction(@left), do: :left
+  defp key_code_to_direction(@right), do: :right
 
   defp move_snake(model) do
     [head | tail] = model.snake
