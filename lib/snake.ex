@@ -24,7 +24,8 @@ defmodule SnakeEx do
     %{
       pellet: rand_pos(grid_width, grid_height),
       snake: [rand_pos(grid_width, grid_height)],
-      direction: nil,
+      direction_curr: nil,
+      direction_buf: nil,
       alive: true,
       height: grid_height,
       width: grid_width,
@@ -35,10 +36,11 @@ defmodule SnakeEx do
   def update(model, msg) do
     case msg do
       {:event, %{key: key}} when key in @arrows ->
-        %{model | direction: next_direction(model.direction, key_code_to_direction(key))}
+        %{model | direction_buf: next_direction(model.direction_curr, key_code_to_direction(key))}
 
       :tick ->
-        move_snake(model)
+        new_model = %{model | direction_curr: model.direction_buf}
+        move_snake(new_model)
 
       _ ->
         model
@@ -101,7 +103,7 @@ defmodule SnakeEx do
 
   defp move_snake(model) do
     [head | _tail] = model.snake
-    next_head = next_pos(head, model.direction)
+    next_head = next_pos(head, model.direction_curr)
     new_snake = [next_head | Enum.drop(model.snake, -1)]
 
     cond do
